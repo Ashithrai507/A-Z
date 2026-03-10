@@ -1,6 +1,6 @@
 class Dupz { 
     public static void main(String[] args) { 
-        int arr[] = {1, 0, 2, 3, 0, 4, 5, 0}; 
+        int arr[] = {1,0,2,3,0,4,5,0}; 
         int newa[] = new int[arr.length]; 
         int k = 0; 
 
