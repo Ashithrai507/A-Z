@@ -4,21 +4,56 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.document_loaders import WebBaseLoader
 
-# 🔑 API KEY
 client = Groq(api_key="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")
 
-# 🧠 MEMORY
 chat_history = []
 MAX_MEMORY = 10
 
-# 📦 VECTOR STORE
 vectorstore = None
 
+website_store = None
 
-# =========================
-# 📄 LOAD PDF
-# =========================
+def load_website(url):
+    global website_store
+
+    try:
+        loader = WebBaseLoader(url)
+        documents = loader.load()
+
+        splitter = RecursiveCharacterTextSplitter(
+            chunk_size=500,
+            chunk_overlap=50
+        )
+
+        docs = splitter.split_documents(documents)
+
+        embeddings = HuggingFaceEmbeddings(
+            model_name="all-MiniLM-L6-v2"
+        )
+
+        website_store = FAISS.from_documents(docs, embeddings)
+
+        return "🌐 Website data loaded successfully!"
+
+    except Exception as e:
+        return f"❌ Website load error: {str(e)}"
+
+def get_website_context(query):
+    global website_store
+
+    if website_store is None:
+        return None
+
+    results = website_store.similarity_search(query, k=3)
+
+    if not results:
+        return ""
+
+    return "\n".join([doc.page_content for doc in results])
+
+
 def load_pdf(file_path):
     global vectorstore
 
@@ -156,29 +191,37 @@ def ask_llm(question):
         # Memory
         memory = get_memory_text()
 
-        # Context
-        context = get_context(question)
+        # 🔥 MULTI SOURCE CONTEXT
+        pdf_context = get_context(question)
+        web_context = get_website_context(question)
 
-        use_rag = False
+        use_pdf = False
+        use_web = False
 
-        if context:
-            if is_context_relevant(context, question):
-                use_rag = True
+        # Decide source
+        if pdf_context and is_context_relevant(pdf_context, question):
+            use_pdf = True
 
-        # Prompt
-        if use_rag:
+        if web_context and is_context_relevant(web_context, question):
+            use_web = True
+
+        # 🧠 PRIORITY LOGIC
+        # PDF > Website > General
+        if use_pdf:
+            print("📄 Using PDF")
+
             prompt = f"""
 You are an intelligent AI assistant.
 
 Conversation History:
 {memory}
 
-Relevant Document Context:
-{context}
+PDF Context:
+{pdf_context}
 
 Instructions:
-- Prefer document context if relevant
-- Combine with general knowledge if needed
+- Answer using PDF context
+- If partially relevant, combine with general knowledge
 - Be clear and structured
 
 Question:
@@ -186,7 +229,32 @@ Question:
 
 Answer:
 """
+
+        elif use_web:
+            print("🌐 Using Website")
+
+            prompt = f"""
+You are a college assistant.
+
+Conversation History:
+{memory}
+
+Website Data:
+{web_context}
+
+Instructions:
+- Answer using website information
+- Be accurate and concise
+
+Question:
+{question}
+
+Answer:
+"""
+
         else:
+            print("🧠 Using General AI")
+
             prompt = f"""
 You are an intelligent AI assistant.
 
@@ -203,8 +271,7 @@ Question:
 Answer:
 """
 
-        print("🧠 Using RAG:", use_rag)
-
+        # 🔥 LLM CALL
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[{"role": "user", "content": prompt}],
@@ -214,6 +281,7 @@ Answer:
 
         answer = response.choices[0].message.content.strip()
 
+        # Save memory
         update_memory(question, answer)
 
         return answer
