@@ -6,6 +6,7 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
+
 client = Groq(api_key="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")
 chat_history = []
 MAX_MEMORY = 10
@@ -30,7 +31,7 @@ def crawl_website(base_url, max_pages=40):
         if url in visited:
             continue
         try:
-            print(f"🔗 Crawling ({len(visited)+1}/{max_pages}): {url}")
+            print(f"Crawling ({len(visited)+1}/{max_pages}): {url}")
             response = requests.get(url, timeout=8, headers={
                 "User-Agent": "Mozilla/5.0 (compatible; CollegeBot/1.0)"
             })

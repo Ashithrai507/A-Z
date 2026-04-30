@@ -1,0 +1,314 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║                    🚀 PAPERAI - HOW TO RUN THE APPLICATION                     ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+QUICK START (3 STEPS)
+═════════════════════════════════════════════════════════════════════════════════
+
+Step 1: Navigate to Project
+───────────────────────────
+$ cd /Users/ashithrai/Documents/learn/A-Z/PaperAI
+
+
+Step 2: Create & Activate Virtual Environment
+──────────────────────────────────────────────
+$ python3 -m venv venv
+$ source venv/bin/activate
+
+You should see (venv) at the start of your prompt:
+(venv) ashithrai@MacBook PaperAI %
+
+
+Step 3: Install Dependencies
+─────────────────────────────
+$ pip install -r requirements.txt
+
+This will take 2-5 minutes as it installs PyTorch, FAISS, etc.
+
+You'll see:
+  Collecting groq
+  Collecting PyQt5
+  Collecting torch
+  Collecting faiss-cpu
+  ... (many more packages)
+  Successfully installed ...
+
+
+Step 4: Setup API Key
+──────────────────────
+$ cp .env.example .env
+$ nano .env   # or your favorite editor
+
+Edit the file and add your Groq API key:
+  GROQ_API_KEY=gsk_your_actual_key_here
+
+Save and exit.
+
+
+Step 5: Run the Application
+────────────────────────────
+
+GUI Mode (Easiest):
+  $ python main.py
+
+CLI Mode (Powerful):
+  $ python cli.py --help
+
+
+═════════════════════════════════════════════════════════════════════════════════
+
+FULL INSTRUCTIONS
+═════════════════════════════════════════════════════════════════════════════════
+
+1. SETUP VIRTUAL ENVIRONMENT
+────────────────────────────
+
+Why? Virtual environments isolate dependencies and avoid system conflicts.
+
+$ cd /Users/ashithrai/Documents/learn/A-Z/PaperAI
+$ python3 -m venv venv
+
+This creates a 'venv' directory with isolated Python environment.
+
+Activate it:
+$ source venv/bin/activate
+
+You'll see (venv) prefix in your terminal.
+
+
+2. INSTALL DEPENDENCIES
+───────────────────────
+
+$ pip install -r requirements.txt
+
+This installs ~40 packages including:
+  • PyQt5 (GUI framework)
+  • Groq (LLM API)
+  • FAISS (vector database)
+  • Sentence Transformers (embeddings)
+  • PyMuPDF (PDF processing)
+  • And many more...
+
+First installation takes 2-5 minutes.
+Subsequent runs are instant (using cache).
+
+
+3. SETUP GROQ API KEY
+──────────────────────
+
+Get your FREE API key:
+  1. Go to: https://console.groq.com/keys
+  2. Sign up (email + password)
+  3. Create new API key
+  4. Copy the key (starts with "gsk_")
+
+Then:
+$ cp .env.example .env
+$ nano .env
+
+Add your key:
+  GROQ_API_KEY=gsk_your_key_here
+
+Save: Ctrl+O, Enter, Ctrl+X
+
+
+4. RUN THE APPLICATION
+───────────────────────
+
+Make sure virtual environment is active:
+$ source venv/bin/activate
+
+Then choose your interface:
+
+GUI (Recommended for users):
+$ python main.py
+
+A window will open. You can:
+  • Click "📄 Upload PDF"
+  • Select a research paper
+  • Ask questions
+  • Get instant answers
+
+CLI (Recommended for automation):
+$ python cli.py process papers/my_paper.pdf
+$ python cli.py ask "What is the main contribution?"
+$ python cli.py explain "Attention mechanisms"
+$ python cli.py interactive
+
+
+═════════════════════════════════════════════════════════════════════════════════
+
+TROUBLESHOOTING
+═════════════════════════════════════════════════════════════════════════════════
+
+Issue: "python: command not found"
+─────────────────────────────────
+Use python3 instead:
+$ python3 main.py
+
+Or create an alias:
+$ alias python=python3
+
+
+Issue: "ModuleNotFoundError: No module named 'PyQt5'"
+──────────────────────────────────────────────────────
+Forgot to activate virtual environment!
+
+$ source venv/bin/activate
+
+Check if (venv) appears in prompt.
+
+
+Issue: "GROQ_API_KEY not found"
+───────────────────────────────
+Missing or incorrect .env file:
+
+$ cp .env.example .env
+$ nano .env
+# Add your key and save
+
+
+Issue: "error: externally-managed-environment"
+───────────────────────────────────────────────
+System preventing direct pip install.
+
+Solution: Use virtual environment:
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+
+
+Issue: Installation taking very long
+──────────────────────────────────────
+PyTorch/FAISS can take time. Patient wait. Or:
+
+Option 1: Use lightweight versions
+  $ pip install groq PyQt5 sentence-transformers faiss-cpu python-dotenv PyMuPDF
+
+Option 2: Install core, skip optional
+  (remove some dependencies from requirements.txt)
+
+
+═════════════════════════════════════════════════════════════════════════════════
+
+USEFUL COMMANDS
+═════════════════════════════════════════════════════════════════════════════════
+
+Activate environment:
+$ source venv/bin/activate
+
+Deactivate environment:
+$ deactivate
+
+Check if environment is active:
+$ which python
+# Should show: .../venv/bin/python
+
+List installed packages:
+$ pip list
+
+Check specific package:
+$ pip show groq
+
+Update a package:
+$ pip install --upgrade groq
+
+Remove virtual environment:
+$ rm -rf venv
+
+
+═════════════════════════════════════════════════════════════════════════════════
+
+FILE STRUCTURE
+═════════════════════════════════════════════════════════════════════════════════
+
+After running, your directory looks like:
+
+PaperAI/
+├── venv/                    ← Virtual environment (ignore)
+│   ├── bin/
+│   ├── lib/
+│   └── ...
+├── main.py                  ← Run this (GUI)
+├── cli.py                   ← Or this (CLI)
+├── data/
+│   ├── uploads/             ← Your PDFs go here
+│   └── vector_store/        ← Vectors stored here
+├── requirements.txt         ← Dependencies list
+├── .env                     ← Your API key (never commit!)
+├── config.py                ← Configuration
+└── ... (other files)
+
+
+═════════════════════════════════════════════════════════════════════════════════
+
+WHAT HAPPENS WHEN YOU RUN
+
+GUI Mode:
+  1. PyQt5 window opens
+  2. 3 tabs: Q&A, Concepts, About
+  3. Click "📄 Upload PDF"
+  4. Select paper
+  5. Wait for processing (5-10 seconds)
+  6. Ask questions in Q&A tab
+  7. Get instant answers! ✨
+
+CLI Mode:
+  1. $ python cli.py process paper.pdf
+     (Processes PDF, creates vectors)
+  2. $ python cli.py ask "Question"
+     (Gets answer from LLM)
+  3. $ python cli.py interactive
+     (Interactive mode - ask multiple questions)
+
+
+═════════════════════════════════════════════════════════════════════════════════
+
+EXPECTED OUTPUTS
+
+First Run:
+  Initializing FAISS index with dimension: 384
+  Loaded embedding model: all-MiniLM-L6-v2 (dimension: 384)
+  Initialized RAG pipeline with model: llama-3.1-70b-versatile
+
+When Processing PDF:
+  Extracting text from PDF...
+  Extracted 20 pages, 50000 characters
+  Created 50 chunks
+  Generated embeddings for 50 chunks
+  Added 50 vectors
+  Database saved
+
+When Asking Question:
+  Searching for relevant content...
+  Found 5 relevant chunks
+  Generating answer...
+  Answer: "The paper proposes..."
+
+
+═════════════════════════════════════════════════════════════════════════════════
+
+THAT'S IT!
+
+You now have a fully working AI Research Paper Assistant.
+
+Questions?
+  → Check README.md
+  → Read QUICKSTART.md
+  → Check SETUP_GUIDE.md
+
+Need help?
+  → Enable DEBUG mode in config.py
+  → Check error messages
+  → Review documentation files
+
+Ready?
+  $ source venv/bin/activate
+  $ python main.py
+
+Enjoy! 🎉📚✨
+
+═════════════════════════════════════════════════════════════════════════════════
