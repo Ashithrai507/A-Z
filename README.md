@@ -68,3 +68,14 @@ This is high-value for:
 These are advanced / niche but powerful.
 
 151,392,1089,713,83,82,80,287
+<!---LeetCode Topics Start-->
+# LeetCode Topics
+## String
+|  |
+| ------- |
+| [0020-valid-parentheses](https://github.com/Ashithrai507/A-Z/tree/master/0020-valid-parentheses) |
+## Stack
+|  |
+| ------- |
+| [0020-valid-parentheses](https://github.com/Ashithrai507/A-Z/tree/master/0020-valid-parentheses) |
+<!---LeetCode Topics End-->
